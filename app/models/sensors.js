@@ -2,8 +2,9 @@ module.exports = {
     
     find: function(callback) {
         callback( false, [
-            require('./sensors/innertemp.js'),
-            require('./sensors/outertemp.js')
+            //require('./sensors/innertemp.js'),
+            require('./sensors/lumen.js')//,
+            //require('./sensors/outertemp.js')
         ])
     },
     

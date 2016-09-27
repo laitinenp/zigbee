@@ -1,7 +1,7 @@
 module.exports = {
     
     relays : [
-        require('./relays/livingroom.js'),
+        require('./relays/led.js'),
         require('./relays/gardenlight.js')
     ],
 

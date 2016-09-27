@@ -1,6 +1,6 @@
 module.exports = {
     
-    name: 'LivingRoom',
+    name: 'Test led',
     
     value: false,
     
