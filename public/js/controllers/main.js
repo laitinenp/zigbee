@@ -1,6 +1,6 @@
 	
-const mainModule = angular.module('UsvaHomeApp', ['sensorsService', 'relaysService']);
-
+const mainModule = angular.module('UsvaHomeApp', ['sensorsService', 'relaysService', 'ngRadialGauge']);
+    
 mainModule.controller('sensorsController', ['$scope','$http','Sensors', function($scope, $http, Sensors) {
 
 	$scope.loading = true;
@@ -8,103 +8,36 @@ mainModule.controller('sensorsController', ['$scope','$http','Sensors', function
 	// GET =====================================================================
 	// when landing on the page, get all sensors and show them
 	// use the service to get all the todos
-	Sensors.getAll()
-		.success(function(data) {
-			$scope.sensors = data;
-			$scope.loading = false;
-		});
-		
-	
-	$scope.writeGauge = function(sensor) {
-		$('.' + sensor.name).kumaGauge({
-			value : sensor.value,
-			min : sensor.min,
-			max : sensor.max,
-			showNeedle : false,
-			valueLabel : {
-				// show or hide this label
-				display : true,
-				// The font family of this label
-				fontFamily : 'Arial',
-				// The font color of this label
-				fontColor : '#000',
-				// Integer of The font size of this label (without px)
-				fontSize : 20,
-				// The font weight of this label
-				fontWeight : 'normal'
-			},
-
-			label : {
-		            display : true,
-		            left : sensor.min.toString(),
-		            right : sensor.max.toString(),
-		            fontFamily : 'Helvetica',
-		            fontColor : '#1E4147',
-		            fontSize : '11',
-		            fontWeight : 'bold'
-		    },
-			title : {
-				display : true,
-				value : sensor.name
-			}
-		});
-	};
-	
-	$scope.activateGaugeRefresher = function() {
-		var update = setInterval(function() {
-			Sensors.getAll()
-				.success(function(data) {
-					$scope.sensors = data;
-					$scope.loading = false;
-					$scope.writeGauges();
-				});
-		}, 2000);
-	};
-	
-	$scope.writeGauges = function() {
-		$scope.sensors.forEach(function(sensor) {
-			$('.' + sensor.name).kumaGauge({
-				value : sensor.value,
-				min : sensor.min,
-				max : sensor.max,
-			showNeedle : false,
-			valueLabel : {
-				// show or hide this label
-				display : true,
-				// The font family of this label
-				fontFamily : 'Arial',
-				// The font color of this label
-				fontColor : '#000',
-				// Integer of The font size of this label (without px)
-				fontSize : 20,
-				// The font weight of this label
-				fontWeight : 'normal'
-			},
-
-			label : {
-		            display : true,
-		            left : sensor.min.toString(),
-		            right : sensor.max.toString(),
-		            fontFamily : 'Helvetica',
-		            fontColor : '#1E4147',
-		            fontSize : '11',
-		            fontWeight : 'bold'
-		    },
-			title : {
-				display : true,
-				value : sensor.name
-			}
+	const getAll = function() {
+		Sensors.getAll()
+			.success(function(data) {
+				data.forEach(function(sensor) {
+					$scope[sensor.name] = sensor;
+				})
+				$scope.sensors = data;
+				$scope.loading = false;
 			});
-		});
 	}
-
-// this filter is needed for kumaGauge widget for generating each slot
-}]).filter('generateGaugeDiv', function() {
-	return function(name) {
-		return '"js-gauge ' + name + ' gauge\"';
+	getAll();
+	
+	const updateGaugeValues = function() {
+		Sensors.getAll()
+			.success(function(data) {
+				for ( var i = 0; i < data.length; i++ ) {
+					$scope.sensors[i].value = data[i].value;
+				}
+				$scope.loading = false;
+			});
 	}
-});
-		
+	
+	var poll = function() {
+        setInterval(function() {
+            updateGaugeValues();
+        }, 10000);
+    };     
+	poll();
+	
+}]);
 		
 mainModule.controller('relaysController', ['$scope','$http','Relays', function($scope, $http, Relays) {
 

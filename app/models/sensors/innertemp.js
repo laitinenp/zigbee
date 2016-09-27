@@ -3,11 +3,31 @@ module.exports = {
     name: 'innerTemperature',
     
     value: 22,
+    unit: "C",
     
-    min: -20,
-    max: 30,
+    lowerLimit: -20,
+    upperLimit: 30,
+    precision: 1,
     
-    frequency: 10000,        // in milliseconds. 6000 = 60x100 = 1 minute
+    frequency: 10000,        // in milliseconds. 10000 = 100x100 = 1 minute
+    
+    ranges: [
+        {
+            min: -20,
+            max: 0,
+            color: '#DEDEDE'
+        },
+        {
+            min: 0,
+            max: 22,
+            color: '#8DCA2F'
+        },
+        {
+            min: 22,
+            max: 30,
+            color: '#FF7700'
+        }
+    ],
     
     measure: function(callback) {
         this.value = 19
@@ -15,7 +35,7 @@ module.exports = {
     }
 
 }
-
+        
 setInterval(function() {
     module.exports.measure(function(result) {
         console.log("MEASURE " + module.exports.name + ":" + result)
