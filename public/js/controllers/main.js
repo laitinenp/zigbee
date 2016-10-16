@@ -33,7 +33,7 @@ mainModule.controller('sensorsController', ['$scope','$http','Sensors', function
 	var poll = function() {
         setInterval(function() {
             updateGaugeValues();
-        }, 10000);
+        }, 2000);
     };     
 	poll();
 	
